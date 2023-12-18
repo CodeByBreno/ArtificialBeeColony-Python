@@ -1,6 +1,7 @@
 import numpy as np;
 import random;
-import math;
+from interface import *;
+from functions import *;
 
 class Articial_Bee_Colony():
 
@@ -34,8 +35,12 @@ class Articial_Bee_Colony():
     
     def inicialization_phase(self):
         # Fase de Inicialização
+
+        # Gera alguns valores aleatórios do espaço de busca (abelhas batedoras)
         self.population = np.random.uniform(low=self.lower_limit, high=self.upper_limit, size=self.num_employed_bees);
-        print(self.population);
+
+        # Inicializa o valor da melhor solução (valor de x) como nulo e da melhor aptidão ( valor de f(x) ) como infinito 
+        # (assim toda entrada será menor)
         self.best_solution = None;
         self.best_fitness = float('inf');
     
@@ -109,29 +114,26 @@ class Articial_Bee_Colony():
         for i in range(self.num_employed_bees):
             # Se o f(x) da abelha for maior que a melhor resposta encontrada até
             # agora, então ela é reposicionada de modo aleatório
-            if (self.objetive_function(self.population[i]) >= self.best_fitness):
+            if (self.objetive_function(self.population[i]) > self.best_fitness):
                 self.population[i] = np.random.uniform(low=self.lower_limit, high=self.upper_limit, size=None);
 
-def function1(x):
-    return pow(x, 4) + pow(x, 3) - 2 * pow(x, 2);
-
-def function2(x):
-    return pow(x, 5) + pow(x, 4) - 3*pow(x, 3) -4*pow(x,2);
-
-def function3(x):
-    return pow(2, x) - pow(x, 5);
-
-def function4(x):
-    return math.sin(x);
+    def plot_graph(self, answer, fitness):
+        plot_graph( self.objetive_function,
+                    self.upper_limit,
+                    self.lower_limit, 
+                    answer,
+                    fitness);
 
 ABC = Articial_Bee_Colony(max_iterations=100,
                           num_employed_bees=20,
                           num_onlooker_bees=20,
                           num_variables=20,
                           objetive_function=function3,
-                          upper_limit=2*3.14159265,
-                          lower_limit=0,
-                          mobility=0.1);
+                          upper_limit=4,
+                          lower_limit=-4,
+                          mobility=1);
+
 ABC.run_algorithm();
 print("O valor mínimo da função vale: \n" + 
       "f( " + str(ABC.best_solution) + " ) = " + str(ABC.best_fitness));
+ABC.plot_graph(ABC.best_solution, ABC.best_fitness);
